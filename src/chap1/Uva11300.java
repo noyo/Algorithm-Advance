@@ -3,6 +3,7 @@ package chap1;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -27,53 +28,28 @@ public class Uva11300 {
                 System.out.println(0);
                 continue;
             }
-            long a[] = new long[n];
+            long a[] = new long[n + 1];
+            long C[] = new long[n];
             long sum = 0;
 
-            for (int i = 0; i < n; i++) {
+            for (int i = 1; i <= n; i++) {
                 a[i] = sc.nextLong();
                 sum += a[i];
             }
 
             long average = sum / n;
-            long result = 0;
-            for (int i = 0; i < n; i++) {
-                int d = 1;
-                long val = a[i] - average;
-                if (val <= 0) {
-                    continue;
-                }
-                a[i] = average;
-                while (val > 0) {
-                    int pre = (i + n - d) % n;
-                    int rear = (i + 1) % n;
-                    if (a[pre] < average) {
-                        if (val >= average - a[pre]) {
-                            val -= average - a[pre];
-                            result += d * (average - a[pre]);
-                            a[pre] = average;
-                        } else {
-                            a[pre] += val;
-                            result += d * (val);
-                            val = 0;
-                        }
-                    }
-
-                    if (a[rear] < average) {
-                        if (val >= average - a[rear]) {
-                            val -= average - a[rear];
-                            result += d * (average - a[rear]);
-                            a[rear] = average;
-                        } else {
-                            a[rear] += val;
-                            result += d * (val);
-                            val = 0;
-                        }
-                    }
-                    d++;
-                }
+            for (int i = 1; i < n; i++) {
+                C[i] = C[i - 1] + a[i] - average;
             }
-            System.out.println(result);
+            Arrays.sort(C);
+
+            int mid = n / 2;
+            sum = 0;
+            for (int i = 0; i < n; i++) {
+                sum += Math.abs(C[i] - C[mid]);
+            }
+
+            System.out.println(sum);
         }
     }
 }
