@@ -32,7 +32,8 @@ public class Uva10047 {
         int dir;
         int reverse = 0;
 
-        Point() {}
+        Point() {
+        }
 
         Point(int r, int c, int dir, int cnt) {
             this.r = r;
@@ -56,6 +57,7 @@ public class Uva10047 {
     private static int roll() {
         Queue<Point> queue = new LinkedList<>();
         queue.offer(new Point(rS, cS, 1, 0));
+        vst[rS][cS][0][1] = true;
         int n;
         int lastN = 1;
 
@@ -64,12 +66,8 @@ public class Uva10047 {
 
             for (int i = 0; i < lastN; i++) {
                 Point point = queue.poll();
-                if (point.r == rT && point.c == cT) {
-                    if (point.cnt % 5 == 0) {
-                        return point.cnt + point.reverse;
-                    } else {
-                        continue;
-                    }
+                if (point.r == rT && point.c == cT && point.cnt % 5 == 0) {
+                    return point.cnt + point.reverse;
                 }
                 int curR = point.r;
                 int curC = point.c;
@@ -77,6 +75,7 @@ public class Uva10047 {
                     int dir = (point.dir + 4 + j) % 4;
                     if (!vst[curR][curC][point.cnt % 5][dir]) {
                         Point p = new Point(curR, curC, dir, point.cnt);
+                        vst[curR][curC][point.cnt % 5][dir] = true;
                         p.reverse += point.reverse + 1;
                         queue.offer(p);
                         n++;
@@ -85,12 +84,12 @@ public class Uva10047 {
 
                 int r = dir[point.dir][0] + curR;
                 int c = dir[point.dir][1] + curC;
-                if (!vst[curR][curC][point.cnt % 5][point.dir] && isLegal(r, c)) {
+                if (isLegal(r, c)) {
                     Point p = new Point(r, c, point.dir, point.cnt + 1);
                     p.reverse = point.reverse;
                     queue.offer(p);
 
-                    vst[curR][curC][point.cnt % 5][point.dir] = true;
+                    vst[r][c][p.cnt % 5][p.dir] = true;
                     n++;
                 }
             }
